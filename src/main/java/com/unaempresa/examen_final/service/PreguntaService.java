@@ -1,5 +1,6 @@
 package com.unaempresa.examen_final.service;
 
+import com.unaempresa.examen_final.exception.PreguntaNoEncontradaException;
 import com.unaempresa.examen_final.model.Pregunta;
 import com.unaempresa.examen_final.repository.PreguntaRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class PreguntaService {
     @Transactional(readOnly = true)
     public Pregunta buscarPorId(Long id) {
         return preguntaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pregunta no encontrada con id: " + id));
+                .orElseThrow(() -> new PreguntaNoEncontradaException(id));
     }
 
     @Transactional

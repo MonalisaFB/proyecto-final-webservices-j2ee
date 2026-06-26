@@ -1,5 +1,6 @@
 package com.unaempresa.examen_final.service;
 
+import com.unaempresa.examen_final.exception.TematicaNoEncontradaException;
 import com.unaempresa.examen_final.model.Tematica;
 import com.unaempresa.examen_final.repository.TematicaRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class TematicaService {
     @Transactional(readOnly = true)
     public Tematica buscarPorId(Long id) {
         return tematicaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Temática no encontrada con id: " + id));
+                .orElseThrow(() -> new TematicaNoEncontradaException(id));
     }
 
     @Transactional
