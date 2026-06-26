@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Inicio - Examen Final</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="jumbotron bg-light p-5 rounded">
+        <h1 class="display-4">Gestión de Preguntas Tipo Test</h1>
+        <p class="lead">Aplicación para gestionar preguntas de tipo verdadero/falso, selección única y selección múltiple.</p>
+        <hr class="my-4">
+        <p>Seleccione una opción del menú para comenzar.</p>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Temáticas</h5>
+                    <p class="card-text">Gestiona las temáticas disponibles para organizar las preguntas.</p>
+                    <a th:href="@{/tematicas}" class="btn btn-primary">Ir a Temáticas</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Preguntas</h5>
+                    <p class="card-text">Gestiona las preguntas tipo test del catálogo.</p>
+                    <a th:href="@{/preguntas}" class="btn btn-primary">Ir a Preguntas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4" th:if="${not #lists.isEmpty(tematicas)}">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Temáticas disponibles</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="t : ${tematicas}">
+                            <a th:href="@{/preguntas(tematicaId=${t.id})}" th:text="${t.nombre}">Temática</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

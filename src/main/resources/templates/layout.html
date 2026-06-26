@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head th:replace="~{fragments/header :: header('Examen Final')}"></head>
+<body>
+<th:block th:replace="~{fragments/menu :: menu}"></th:block>
+
+<div class="container mt-3">
+    <th:block layout:fragment="content">
+        <div class="alert alert-warning">Sin contenido</div>
+    </th:block>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

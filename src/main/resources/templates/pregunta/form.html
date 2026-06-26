@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title th:text="${pregunta.id != null ? 'Editar Pregunta' : 'Nueva Pregunta'}">Formulario Pregunta</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <h1 th:text="${pregunta.id != null ? 'Editar Pregunta' : 'Nueva Pregunta'}">Formulario</h1>
+
+    <form th:action="@{/preguntas/guardar}" th:object="${pregunta}" method="post" class="mt-3">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label for="enunciado" class="form-label">Enunciado</label>
+            <textarea th:field="*{enunciado}" class="form-control" id="enunciado" rows="3"></textarea>
+            <div class="text-danger" th:if="${#fields.hasErrors('enunciado')}" th:errors="*{enunciado}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo</label>
+            <select th:field="*{tipo}" class="form-select" id="tipo">
+                <option value="">Seleccione un tipo</option>
+                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}"></option>
+            </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="tematica" class="form-label">Temática</label>
+            <select th:field="*{tematica.id}" class="form-select" id="tematica">
+                <option value="">Seleccione una temática</option>
+                <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
+            </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('tematica')}" th:errors="*{tematica}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="opciones" class="form-label">Opciones</label>
+            <textarea th:field="*{opciones}" class="form-control" id="opciones" rows="3"
+                      placeholder="Opciones separadas por salto de línea (solo para selección única/múltiple)"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="respuestaCorrecta" class="form-label">Respuesta Correcta</label>
+            <textarea th:field="*{respuestaCorrecta}" class="form-control" id="respuestaCorrecta" rows="2"></textarea>
+            <div class="text-danger" th:if="${#fields.hasErrors('respuestaCorrecta')}" th:errors="*{respuestaCorrecta}"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a th:href="@{/preguntas}" class="btn btn-secondary">&larr; Volver</a>
+        <a th:href="@{/}" class="btn btn-outline-primary">Inicio</a>
+    </form>
+</div>
+</body>
+</html>

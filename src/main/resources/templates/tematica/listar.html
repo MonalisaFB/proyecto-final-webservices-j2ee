@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Listado de Temáticas</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Temáticas</h1>
+        <a th:href="@{/tematicas/nueva}" class="btn btn-success">+ Nueva Temática</a>
+    </div>
+
+    <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${param.success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${#lists.isEmpty(tematicas)}" class="alert alert-info">
+        No hay temáticas registradas.
+    </div>
+
+    <table class="table table-striped" th:if="${not #lists.isEmpty(tematicas)}">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${tematicas}">
+            <td th:text="${t.id}">1</td>
+            <td th:text="${t.nombre}">Nombre</td>
+            <td>
+                <a th:href="@{/tematicas/editar/{id}(id=${t.id})}" class="btn btn-sm btn-warning">Editar</a>
+                <a th:href="@{/tematicas/eliminar/{id}(id=${t.id})}" class="btn btn-sm btn-danger"
+                   onclick="return confirm('¿Eliminar esta temática?')">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-3">
+        <a th:href="@{/}" class="btn btn-outline-primary">&larr; Volver al Inicio</a>
+    </div>
+</div>
+</body>
+</html>
