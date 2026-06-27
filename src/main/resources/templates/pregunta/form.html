@@ -3,14 +3,14 @@
       layout:decorate="~{layout}">
 
 <head>
-    <title th:text="${pregunta.id != null ? 'Editar Pregunta' : 'Nueva Pregunta'}">Formulario Pregunta</title>
+    <title th:text="${preguntaForm.id != null ? 'Editar Pregunta' : 'Nueva Pregunta'}">Formulario Pregunta</title>
 </head>
 
 <body>
 <div layout:fragment="content">
-    <h1 th:text="${pregunta.id != null ? 'Editar Pregunta' : 'Nueva Pregunta'}">Formulario</h1>
+    <h1 th:text="${preguntaForm.id != null ? 'Editar Pregunta' : 'Nueva Pregunta'}">Formulario</h1>
 
-    <form th:action="@{/preguntas/guardar}" th:object="${pregunta}" method="post" class="mt-3">
+    <form th:action="@{/preguntas/guardar}" th:object="${preguntaForm}" method="post" class="mt-3">
         <input type="hidden" th:field="*{id}">
 
         <div class="mb-3">
@@ -29,12 +29,12 @@
         </div>
 
         <div class="mb-3">
-            <label for="tematica" class="form-label">Temática</label>
-            <select th:field="*{tematica.id}" class="form-select" id="tematica">
+            <label for="tematicaId" class="form-label">Temática</label>
+            <select th:field="*{tematicaId}" class="form-select" id="tematicaId">
                 <option value="">Seleccione una temática</option>
                 <option th:each="t : ${tematicas}" th:value="${t.id}" th:text="${t.nombre}"></option>
             </select>
-            <div class="text-danger" th:if="${#fields.hasErrors('tematica')}" th:errors="*{tematica}"></div>
+            <div class="text-danger" th:if="${#fields.hasErrors('tematicaId')}" th:errors="*{tematicaId}"></div>
         </div>
 
         <div class="mb-3">

@@ -2,6 +2,7 @@ package com.unaempresa.examen_final.service;
 
 import com.unaempresa.examen_final.exception.PreguntaNoEncontradaException;
 import com.unaempresa.examen_final.model.Pregunta;
+import com.unaempresa.examen_final.model.TipoPregunta;
 import com.unaempresa.examen_final.repository.PreguntaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,12 @@ public class PreguntaService {
     @Transactional(readOnly = true)
     public Page<Pregunta> listarPorTematica(Long tematicaId, Pageable pageable) {
         return preguntaRepository.findByTematicaId(tematicaId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Pregunta> filtrar(Long tematicaId, TipoPregunta tipo, Pageable pageable) {
+        Class<? extends Pregunta> entityClass = tipo != null ? tipo.getEntityClass() : null;
+        return preguntaRepository.filtrar(tematicaId, entityClass, pageable);
     }
 
     @Transactional(readOnly = true)

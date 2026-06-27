@@ -1,8 +1,6 @@
 package com.unaempresa.examen_final.controller;
 
-import com.unaempresa.examen_final.model.Pregunta;
-import com.unaempresa.examen_final.model.TipoPregunta;
-import com.unaempresa.examen_final.model.Tematica;
+import com.unaempresa.examen_final.model.*;
 import com.unaempresa.examen_final.service.PreguntaService;
 import com.unaempresa.examen_final.service.TematicaService;
 import jakarta.validation.Valid;
@@ -17,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
+
 @Controller
 @RequestMapping("/preguntas")
 @RequiredArgsConstructor
@@ -29,47 +29,72 @@ public class PreguntaController {
     public String listar(@RequestParam(defaultValue = "0") int page,
                          @RequestParam(defaultValue = "10") int size,
                          @RequestParam(required = false) Long tematicaId,
+                         @RequestParam(required = false) TipoPregunta tipo,
                          Model model) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        Page<Pregunta> pagina;
+        Page<Pregunta> pagina = preguntaService.filtrar(tematicaId, tipo, pageable);
 
-        if (tematicaId != null) {
-            pagina = preguntaService.listarPorTematica(tematicaId, pageable);
-        } else {
-            pagina = preguntaService.listarTodas(pageable);
-        }
-
-        // Se añade siempre, aunque sea null, para que la vista pueda referenciarla sin error
         model.addAttribute("tematicaId", tematicaId);
+        model.addAttribute("tipo", tipo);
         model.addAttribute("pagina", pagina);
         model.addAttribute("tematicas", tematicaService.listarTodas());
+        model.addAttribute("tipos", TipoPregunta.values());
         return "pregunta/listar";
     }
 
     @GetMapping("/nueva")
     public String nuevaForm(Model model) {
-        Pregunta pregunta = new Pregunta();
-        pregunta.setTematica(new Tematica());
-        model.addAttribute("pregunta", pregunta);
+        model.addAttribute("preguntaForm", new PreguntaFormDTO());
         model.addAttribute("tematicas", tematicaService.listarTodas());
         model.addAttribute("tipos", TipoPregunta.values());
         return "pregunta/form";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute("pregunta") Pregunta pregunta,
+    public String guardar(@Valid @ModelAttribute("preguntaForm") PreguntaFormDTO form,
                           BindingResult result,
                           RedirectAttributes redirect,
                           Model model) {
         if (result.hasErrors()) {
-            if (pregunta.getTematica() == null) {
-                pregunta.setTematica(new Tematica());
-            }
             model.addAttribute("tematicas", tematicaService.listarTodas());
             model.addAttribute("tipos", TipoPregunta.values());
             return "pregunta/form";
         }
-        pregunta.setTematica(tematicaService.buscarPorId(pregunta.getTematica().getId()));
+
+        Tematica tematica = tematicaService.buscarPorId(form.getTematicaId());
+        Pregunta pregunta;
+
+        switch (form.getTipo()) {
+            case VF:
+                PreguntaVerdaderoFalso vf = new PreguntaVerdaderoFalso();
+                vf.setRespuestaCorrecta("true".equalsIgnoreCase(form.getRespuestaCorrecta() != null ? form.getRespuestaCorrecta().trim() : ""));
+                pregunta = vf;
+                break;
+            case UNICA:
+                PreguntaSeleccionUnica unica = new PreguntaSeleccionUnica();
+                unica.setOpcionCorrecta(form.getRespuestaCorrecta() != null ? form.getRespuestaCorrecta().trim() : "");
+                if (form.getOpciones() != null && !form.getOpciones().isBlank()) {
+                    unica.setOpciones(Arrays.asList(form.getOpciones().split("\\n")));
+                }
+                pregunta = unica;
+                break;
+            case MULTIPLE:
+                PreguntaSeleccionMultiple multiple = new PreguntaSeleccionMultiple();
+                if (form.getOpciones() != null && !form.getOpciones().isBlank()) {
+                    multiple.setOpciones(Arrays.asList(form.getOpciones().split("\\n")));
+                }
+                pregunta = multiple;
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo no válido: " + form.getTipo());
+        }
+
+        if (form.getId() != null) {
+            pregunta.setId(form.getId());
+        }
+        pregunta.setEnunciado(form.getEnunciado().trim());
+        pregunta.setTematica(tematica);
+
         preguntaService.guardar(pregunta);
         redirect.addFlashAttribute("success", "Pregunta guardada correctamente");
         return "redirect:/preguntas";
@@ -77,7 +102,25 @@ public class PreguntaController {
 
     @GetMapping("/editar/{id}")
     public String editarForm(@PathVariable Long id, Model model) {
-        model.addAttribute("pregunta", preguntaService.buscarPorId(id));
+        Pregunta pregunta = preguntaService.buscarPorId(id);
+        PreguntaFormDTO form = new PreguntaFormDTO();
+        form.setId(pregunta.getId());
+        form.setEnunciado(pregunta.getEnunciado());
+        form.setTematicaId(pregunta.getTematica().getId());
+
+        if (pregunta instanceof PreguntaVerdaderoFalso vf) {
+            form.setTipo(TipoPregunta.VF);
+            form.setRespuestaCorrecta(vf.getRespuestaCorrecta().toString());
+        } else if (pregunta instanceof PreguntaSeleccionUnica unica) {
+            form.setTipo(TipoPregunta.UNICA);
+            form.setRespuestaCorrecta(unica.getOpcionCorrecta());
+            form.setOpciones(String.join("\n", unica.getOpciones()));
+        } else if (pregunta instanceof PreguntaSeleccionMultiple multiple) {
+            form.setTipo(TipoPregunta.MULTIPLE);
+            form.setOpciones(String.join("\n", multiple.getOpciones()));
+        }
+
+        model.addAttribute("preguntaForm", form);
         model.addAttribute("tematicas", tematicaService.listarTodas());
         model.addAttribute("tipos", TipoPregunta.values());
         return "pregunta/form";

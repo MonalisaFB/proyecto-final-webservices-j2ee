@@ -7,10 +7,12 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
-@Data
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_pregunta", discriminatorType = DiscriminatorType.STRING)
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class Pregunta {
+public abstract class Pregunta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,22 +23,10 @@ public class Pregunta {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String enunciado;
 
-    @NotNull(message = "El tipo de pregunta es obligatorio")
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoPregunta tipo;
-
-    @NotBlank(message = "La respuesta correcta es obligatoria")
-    @Size(max = 500, message = "La respuesta correcta no puede superar los {max} caracteres")
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String respuestaCorrecta;
-
-    @Size(max = 1000, message = "Las opciones no pueden superar los {max} caracteres")
-    @Column(columnDefinition = "TEXT")
-    private String opciones;
-
     @NotNull(message = "Debe seleccionar una temática")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tematica_id", nullable = false)
     private Tematica tematica;
+
+    public abstract String getTipoDescripcion();
 }
