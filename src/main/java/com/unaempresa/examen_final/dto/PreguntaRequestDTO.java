@@ -1,12 +1,19 @@
-package com.unaempresa.examen_final.model;
+package com.unaempresa.examen_final.dto;
 
+import com.unaempresa.examen_final.model.TipoPregunta;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-public class PreguntaFormDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PreguntaRequestDTO {
 
     private Long id;
 
@@ -20,7 +27,11 @@ public class PreguntaFormDTO {
     @NotNull(message = "Debe seleccionar una temática")
     private Long tematicaId;
 
-    private String respuestaCorrecta;
+    private Boolean respuestaCorrecta;
 
-    private String opciones;
+    private String opcionCorrecta;
+
+    private List<String> opciones;
+
+    private List<String> opcionesCorrectas;
 }

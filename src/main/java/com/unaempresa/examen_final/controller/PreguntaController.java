@@ -1,5 +1,6 @@
 package com.unaempresa.examen_final.controller;
 
+import com.unaempresa.examen_final.dto.PreguntaFormDTO;
 import com.unaempresa.examen_final.model.*;
 import com.unaempresa.examen_final.service.PreguntaService;
 import com.unaempresa.examen_final.service.TematicaService;
