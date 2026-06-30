@@ -1,6 +1,7 @@
 package com.unaempresa.examen_final.controller;
 
 import com.unaempresa.examen_final.dto.PreguntaFormDTO;
+import com.unaempresa.examen_final.dto.RespuestaDTO;
 import com.unaempresa.examen_final.model.*;
 import com.unaempresa.examen_final.service.PreguntaService;
 import com.unaempresa.examen_final.service.TematicaService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("/preguntas")
@@ -125,6 +127,37 @@ public class PreguntaController {
         model.addAttribute("tematicas", tematicaService.listarTodas());
         model.addAttribute("tipos", TipoPregunta.values());
         return "pregunta/form";
+    }
+
+    @GetMapping("/responder/{id}")
+    public String responderForm(@PathVariable Long id, Model model) {
+        Pregunta pregunta = preguntaService.buscarPorId(id);
+        RespuestaDTO respuesta = new RespuestaDTO();
+        respuesta.setPreguntaId(pregunta.getId());
+        model.addAttribute("pregunta", pregunta);
+        model.addAttribute("respuesta", respuesta);
+        return "pregunta/responder";
+    }
+
+    @PostMapping("/responder")
+    public String responder(@ModelAttribute RespuestaDTO respuesta, Model model) {
+        Pregunta pregunta = preguntaService.buscarPorId(respuesta.getPreguntaId());
+        boolean acierto = false;
+
+        if (pregunta instanceof PreguntaVerdaderoFalso vf) {
+            acierto = Boolean.parseBoolean(respuesta.getRespuesta()) == vf.getRespuestaCorrecta();
+        } else if (pregunta instanceof PreguntaSeleccionUnica unica) {
+            acierto = unica.getOpcionCorrecta().equalsIgnoreCase(respuesta.getRespuesta().trim());
+        } else if (pregunta instanceof PreguntaSeleccionMultiple multiple) {
+            List<String> correctas = multiple.getOpcionesCorrectas().stream().map(String::toLowerCase).sorted().toList();
+            List<String> dadas = respuesta.getRespuestas().stream().map(String::toLowerCase).sorted().toList();
+            acierto = correctas.equals(dadas);
+        }
+
+        model.addAttribute("pregunta", pregunta);
+        model.addAttribute("acierto", acierto);
+        model.addAttribute("respuesta", respuesta);
+        return "pregunta/resultado";
     }
 
     @GetMapping("/eliminar/{id}")
