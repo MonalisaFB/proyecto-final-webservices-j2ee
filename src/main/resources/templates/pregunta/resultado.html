@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Resultado - Examen Final</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-accent-top" th:classappend="${acierto} ? 'card-accent-dark' : 'card-accent-gray'">
+                <div class="card-body p-4 text-center">
+                    <div style="font-size: 4rem;" th:text="${acierto} ? '✅' : '❌'"></div>
+                    <h2 class="fw-bold mt-2" th:text="${acierto} ? '¡Correcto!' : 'Incorrecto'"></h2>
+                    <p class="text-muted mb-4">Pregunta: <span class="fw-medium" th:text="${pregunta.enunciado}">Enunciado</span></p>
+
+                    <div class="text-start bg-light p-3 rounded mb-4">
+                        <p class="mb-1 fw-medium">Tu respuesta:</p>
+                        <p class="mb-0" th:if="${#lists.isEmpty(respuesta.respuestas)}" th:text="${respuesta.respuesta}"></p>
+                        <ul th:if="${not #lists.isEmpty(respuesta.respuestas)}" class="mb-0">
+                            <li th:each="r : ${respuesta.respuestas}" th:text="${r}"></li>
+                        </ul>
+                    </div>
+
+                    <div th:if="${not acierto}" class="text-start bg-light p-3 rounded mb-4">
+                        <p class="mb-1 fw-medium">Respuesta correcta:</p>
+                        <p th:if="${pregunta.getClass().getSimpleName() == 'PreguntaVerdaderoFalso'}"
+                           th:text="${pregunta.respuestaCorrecta} ? 'Verdadero' : 'Falso'"></p>
+                        <p th:if="${pregunta.getClass().getSimpleName() == 'PreguntaSeleccionUnica'}"
+                           th:text="${pregunta.opcionCorrecta}"></p>
+                        <ul th:if="${pregunta.getClass().getSimpleName() == 'PreguntaSeleccionMultiple'}" class="mb-0">
+                            <li th:each="c : ${pregunta.opcionesCorrectas}" th:text="${c}"></li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-center">
+                        <a th:href="@{/preguntas/responder/{id}(id=${pregunta.id})}" class="btn btn-gradient">Intentar de nuevo</a>
+                        <a th:href="@{/preguntas}" class="btn btn-outline-secondary">&larr; Volver a preguntas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+:root {
+  --gray-900: #1e1e2e;
+  --gray-800: #2d2d3d;
+  --gray-700: #374151;
+  --gray-600: #4b5563;
+  --gray-500: #6b7280;
+  --gray-400: #9ca3af;
+  --gray-300: #d1d5db;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --gray-50: #f9fafb;
+  --accent-light: #d4d4d8;
+  --accent-dark: #52525b;
+}
+
+body {
+  background: var(--gray-100);
+  min-height: 100vh;
+}
+
+.navbar-gradient {
+  background: var(--gray-800) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-gradient .nav-link {
+  transition: all 0.2s;
+  border-radius: 6px;
+  margin: 0 2px;
+}
+
+.navbar-gradient .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hero-section {
+  background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.hero-section h1 {
+  font-weight: 700;
+  font-size: 2.2rem;
+}
+
+.hero-section .lead {
+  font-size: 1.1rem;
+  opacity: 0.85;
+}
+
+.card-accent-top {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+
+.card-accent-top:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.card-accent-top .card-body {
+  padding: 2rem;
+}
+
+.card-accent-gray {
+  border-top: 4px solid var(--accent-light);
+}
+
+.card-accent-dark {
+  border-top: 4px solid var(--accent-dark);
+}
+
+.card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.btn-gradient {
+  background: var(--gray-800);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.8rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-gradient:hover {
+  background: var(--gray-900);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.btn-gradient-light {
+  background: var(--gray-200);
+  color: var(--gray-800);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn-gradient-light:hover {
+  background: var(--gray-300);
+  color: var(--gray-900);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-table {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
